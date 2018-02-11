@@ -3,14 +3,20 @@ package text_editor;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.*;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.PrintWriter;
+import static java.util.Collections.copy;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -21,15 +27,17 @@ public class MainFrame extends javax.swing.JFrame {
     /**
      * Creates new form MainFrame
      */
+    File selectedFile = null;
     public MainFrame() {
         initComponents();
         //FileNameExtensionFilter filter = new FileNameExtensionFilter("TEXT FILES","text","txt");
         //fileOpener.setFileFilter(filter);
-        
+        this.setLocationRelativeTo(null);
+        File selectedFile=null;
     }
 
     @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">                          
     private void initComponents() {
 
         jMenuItem1 = new javax.swing.JMenuItem();
@@ -37,6 +45,8 @@ public class MainFrame extends javax.swing.JFrame {
         jMenuItem6 = new javax.swing.JMenuItem();
         jMenuItem9 = new javax.swing.JMenuItem();
         jMenuItem10 = new javax.swing.JMenuItem();
+        jMenuItem12 = new javax.swing.JMenuItem();
+        jMenuItem15 = new javax.swing.JMenuItem();
         jScrollPane1 = new javax.swing.JScrollPane();
         display = new javax.swing.JTextArea();
         jButton3 = new javax.swing.JButton();
@@ -48,8 +58,11 @@ public class MainFrame extends javax.swing.JFrame {
         jMenuItem8 = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
         jMenuItem2 = new javax.swing.JMenuItem();
+        jMenuItem16 = new javax.swing.JMenuItem();
         jMenu4 = new javax.swing.JMenu();
         jMenuItem11 = new javax.swing.JMenuItem();
+        jMenu6 = new javax.swing.JMenu();
+        jMenuItem14 = new javax.swing.JMenuItem();
 
         jMenuItem1.setText("jMenuItem1");
 
@@ -60,6 +73,10 @@ public class MainFrame extends javax.swing.JFrame {
         jMenuItem9.setText("jMenuItem9");
 
         jMenuItem10.setText("jMenuItem10");
+
+        jMenuItem12.setText("jMenuItem12");
+
+        jMenuItem15.setText("jMenuItem15");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -86,6 +103,11 @@ public class MainFrame extends javax.swing.JFrame {
 
         jMenuItem7.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
         jMenuItem7.setText("Save");
+        jMenuItem7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem7ActionPerformed(evt);
+            }
+        });
         jMenu3.add(jMenuItem7);
 
         jMenuItem8.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F4, java.awt.event.InputEvent.ALT_MASK));
@@ -105,6 +127,10 @@ public class MainFrame extends javax.swing.JFrame {
         jMenuItem2.setText("Undo");
         jMenu2.add(jMenuItem2);
 
+        jMenuItem16.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A, java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItem16.setText("Select All");
+        jMenu2.add(jMenuItem16);
+
         jMenuBar1.add(jMenu2);
 
         jMenu4.setText("Format");
@@ -113,6 +139,23 @@ public class MainFrame extends javax.swing.JFrame {
         jMenu4.add(jMenuItem11);
 
         jMenuBar1.add(jMenu4);
+
+        jMenu6.setText("Help");
+        jMenu6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenu6ActionPerformed(evt);
+            }
+        });
+
+        jMenuItem14.setText("About");
+        jMenuItem14.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem14ActionPerformed(evt);
+            }
+        });
+        jMenu6.add(jMenuItem14);
+
+        jMenuBar1.add(jMenu6);
 
         setJMenuBar(jMenuBar1);
 
@@ -128,9 +171,9 @@ public class MainFrame extends javax.swing.JFrame {
         );
 
         pack();
-    }// </editor-fold>//GEN-END:initComponents
+    }// </editor-fold>                        
 
-    private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed
+    private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {                                           
         //Show Open File Menu
         JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
 
@@ -139,25 +182,91 @@ public class MainFrame extends javax.swing.JFrame {
 
 		if (returnValue == JFileChooser.APPROVE_OPTION) {
 			
-                    File selectedFile = jfc.getSelectedFile();
+                    
+                    selectedFile = jfc.getSelectedFile();
 		    System.out.println(selectedFile.getAbsolutePath());
                     try{
                         Scanner sc = new Scanner(new FileInputStream(selectedFile));
                         String buffer="";
                         while(sc.hasNext()){
-                            buffer+=sc.nextLine();
+                            buffer+=sc.nextLine()+"\n";
                         }
                         display.setText(buffer);
                     }catch(FileNotFoundException e){
                         Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE,null,e);
                     }
 		}
-    }//GEN-LAST:event_jMenuItem5ActionPerformed
+    }                                          
 
-    private void jMenuItem8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem8ActionPerformed
+    private void jMenuItem8ActionPerformed(java.awt.event.ActionEvent evt) {                                           
         // TODO add your handling code here:
         System.exit(0);
-    }//GEN-LAST:event_jMenuItem8ActionPerformed
+    }                                          
+
+    private void jMenu6ActionPerformed(java.awt.event.ActionEvent evt) {                                       
+        // SHOW DEVELOPERS INFO
+       
+    }                                      
+
+    private void jMenuItem14ActionPerformed(java.awt.event.ActionEvent evt) {                                            
+        // TODO add your handling code here:
+         JPopupMenu popupmenu = new JPopupMenu("About");   
+        JMenuItem desc = new JMenuItem("Developers");
+        JMenuItem dev1 = new JMenuItem("Ajay Hegde");  
+        JMenuItem dev2 = new JMenuItem("Dattatreya Nayak");  
+        JMenuItem dev3 = new JMenuItem("Prajjwal Rai");
+        JMenuItem dev4 = new JMenuItem("CSE,MIT Manipal");
+        popupmenu.add(desc); 
+        popupmenu.add(dev1); 
+        popupmenu.add(dev2);
+        popupmenu.add(dev3);  
+        popupmenu.add(dev4); 
+        /*display.addMouseListener(new MouseAdapter() {  
+            public void mouseClicked(MouseEvent e) {              
+                
+            }                 
+        });*/
+         popupmenu.show(display , 500, 500); 
+        //display.add(popupmenu);   
+        //display.setSize(300,300);  
+        //display.setLayout(null);  
+        //display.setVisible(true);  
+    }                                           
+
+    private void jMenuItem7ActionPerformed(java.awt.event.ActionEvent evt) {                                           
+        // TODO add your handling code here:
+        if(selectedFile!=null){
+            try {
+                PrintWriter pw = new PrintWriter(selectedFile);
+                pw.write(display.getText());
+                pw.close();
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+        }else{
+            JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+            int status = jfc.showSaveDialog(this);
+            if (status == JFileChooser.APPROVE_OPTION) {
+                File f = new File(jfc.getSelectedFile().getPath());
+                if(f.exists()){
+                    JOptionPane.showMessageDialog(rootPane,"File already exists","error",JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                PrintWriter pw;
+                try {
+                    pw = new PrintWriter(f);
+                    pw.write(display.getText());
+                    pw.close();
+                    JOptionPane.showMessageDialog(rootPane,"Saved","Done",JOptionPane.INFORMATION_MESSAGE);
+                } catch (FileNotFoundException ex) {
+                    Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }else{
+                 JOptionPane.showMessageDialog(rootPane,"Can't save","error",JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }                                          
 
     /**
      * @param args the command line arguments
@@ -194,16 +303,21 @@ public class MainFrame extends javax.swing.JFrame {
         });
     }
 
-    // Variables declaration - do not modify//GEN-BEGIN:variables
+    // Variables declaration - do not modify                     
     private javax.swing.JTextArea display;
     private javax.swing.JButton jButton3;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
     private javax.swing.JMenu jMenu4;
+    private javax.swing.JMenu jMenu6;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem10;
     private javax.swing.JMenuItem jMenuItem11;
+    private javax.swing.JMenuItem jMenuItem12;
+    private javax.swing.JMenuItem jMenuItem14;
+    private javax.swing.JMenuItem jMenuItem15;
+    private javax.swing.JMenuItem jMenuItem16;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
@@ -213,7 +327,7 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem8;
     private javax.swing.JMenuItem jMenuItem9;
     private javax.swing.JScrollPane jScrollPane1;
-    // End of variables declaration//GEN-END:variables
+    // End of variables declaration                   
 
     private void addActionListener(ActionListener actionListener) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
