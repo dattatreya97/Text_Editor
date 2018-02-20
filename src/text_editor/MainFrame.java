@@ -1,6 +1,9 @@
 
 package text_editor;
 
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.GraphicsEnvironment;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -14,11 +17,21 @@ import java.io.PrintWriter;
 import static java.util.Collections.copy;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.ComboBoxModel;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
+import javax.swing.JColorChooser;
+import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
+import javax.swing.JToolBar;
+import javax.swing.ListSelectionModel;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.filechooser.FileSystemView;
 
@@ -27,19 +40,40 @@ public class MainFrame extends javax.swing.JFrame {
     /**
      * Creates new form MainFrame
      */
+    private Color color = (Color.BLACK);
     File selectedFile = null;
+    JComboBox jcbFont = new javax.swing.JComboBox();
+    JComboBox jcbSelectSize = new javax.swing.JComboBox();
+    int fstyle;
+    Font font1;
+    static int fsize = 20;
+    public String familyvalue [];
+    public String sizevalue [];
+    String ffamily, fsizestr, fstylestr;
+    int [] stylevalue={ Font.PLAIN, Font.BOLD, Font.ITALIC };
+    String [] stylevalues={ "PLAIN", "BOLD", "ITALIC" };
+    private JMenuBar jMenuBar2;
+    private JLabel jLabel1;
+    private JLabel jLabel2;
+    private JMenu jMenu44;
+    private JMenuItem status;
+    private JMenuItem fontsize;
+    private JMenuItem fontstyle;
+    private JMenuItem fontfamily;
     public MainFrame() {
         initComponents();
         //FileNameExtensionFilter filter = new FileNameExtensionFilter("TEXT FILES","text","txt");
         //fileOpener.setFileFilter(filter);
         this.setLocationRelativeTo(null);
         File selectedFile=null;
+        font1 = new Font("Arial",Font.PLAIN,17);
     }
-
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">                          
     private void initComponents() {
-
+        
+        loadFont();
         jMenuItem1 = new javax.swing.JMenuItem();
         jMenuItem3 = new javax.swing.JMenuItem();
         jMenuItem6 = new javax.swing.JMenuItem();
@@ -51,6 +85,7 @@ public class MainFrame extends javax.swing.JFrame {
         display = new javax.swing.JTextArea();
         jButton3 = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
+        jMenuBar2 = new javax.swing.JMenuBar();
         jMenu3 = new javax.swing.JMenu();
         jMenuItem4 = new javax.swing.JMenuItem();
         jMenuItem5 = new javax.swing.JMenuItem();
@@ -60,10 +95,19 @@ public class MainFrame extends javax.swing.JFrame {
         jMenuItem2 = new javax.swing.JMenuItem();
         jMenuItem16 = new javax.swing.JMenuItem();
         jMenu4 = new javax.swing.JMenu();
+        jMenu44 = new javax.swing.JMenu();
         jMenuItem11 = new javax.swing.JMenuItem();
         jMenu6 = new javax.swing.JMenu();
         jMenuItem14 = new javax.swing.JMenuItem();
-
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        JList familylist, stylelist, sizelist;
+        
+        
+        fontfamily = new JMenuItem("Font Family");
+	fontstyle = new JMenuItem("Font Style");
+	fontsize = new JMenuItem("Font Size");
+        
         jMenuItem1.setText("jMenuItem1");
 
         jMenuItem3.setText("jMenuItem3");
@@ -79,7 +123,18 @@ public class MainFrame extends javax.swing.JFrame {
         jMenuItem15.setText("jMenuItem15");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        familylist = new JList(familyvalue);
+        //System.out.println(familylist);
+	stylelist = new JList(stylevalues);
+	sizelist = new JList(sizevalue);
 
+
+	familylist.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+	sizelist.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+	stylelist.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        
+        
+      
         display.setColumns(20);
         display.setRows(5);
         jScrollPane1.setViewportView(display);
@@ -134,12 +189,56 @@ public class MainFrame extends javax.swing.JFrame {
         jMenuBar1.add(jMenu2);
 
         jMenu4.setText("Format");
-
-        jMenuItem11.setText("Font");
-        jMenu4.add(jMenuItem11);
-
+        
+        jMenuItem10.setText("Text Color");
+        jMenu44.setText("Font");
+        jMenu4.add(jMenu44);
+        jMenu4.add(jMenuItem10);
+        jMenu44.add(fontfamily);
+        jMenu44.add(fontstyle);
+        jMenu44.add(fontsize);
+        
         jMenuBar1.add(jMenu4);
-
+        
+        jcbSelectSize.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "10", "14", "18", "22", "26", "30", "34", "36", "40", "44", "48", "52" }));
+        jcbSelectSize.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jcbSelectSizeActionPerformed(evt);
+            }
+        });
+        
+        fontfamily.addActionListener(new java.awt.event.ActionListener(){
+             public void actionPerformed(java.awt.event.ActionEvent evt) {
+                 JOptionPane.showConfirmDialog(null, jcbFont, "Choose Font Family", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+                display.setFont(new Font(jcbFont.getSelectedItem().toString(),
+                Font.PLAIN, Integer.parseInt(jcbSelectSize.getSelectedItem().toString())));
+             }
+        });
+        
+        fontstyle.addActionListener(new java.awt.event.ActionListener(){
+             public void actionPerformed(java.awt.event.ActionEvent evt) {
+                 JOptionPane.showConfirmDialog(null, stylelist, "Choose Font Style", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+		fstyle=stylevalue[stylelist.getSelectedIndex()];
+		font1=new Font(ffamily,fstyle,fsize);
+		display.setFont(font1);
+             }
+        });
+        
+        fontsize.addActionListener(new java.awt.event.ActionListener(){
+             public void actionPerformed(java.awt.event.ActionEvent evt) {
+                JOptionPane.showConfirmDialog(null, jcbSelectSize, "Choose Font Size", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+             }
+        });
+        
+        jMenuItem10.addActionListener(new java.awt.event.ActionListener(){
+             public void actionPerformed(java.awt.event.ActionEvent evt) {
+                 color = JColorChooser.showDialog(null,"Choose colour", color);
+                 if(color==null)
+                     color = (Color.BLACK);
+                 display.setForeground(color);
+             }
+        });
+        
         jMenu6.setText("Help");
         jMenu6.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -172,7 +271,21 @@ public class MainFrame extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>                        
+    
+    private void jcbSelectSizeActionPerformed(java.awt.event.ActionEvent evt) {                                              
+        String getSize = jcbSelectSize.getSelectedItem().toString();
+        Font f = display.getFont();
+        display.setFont(new Font(f.getFontName(),
+                f.getStyle(), Integer.parseInt(getSize)));
 
+    }
+    private void loadFont() {
+    GraphicsEnvironment gEnv = GraphicsEnvironment.getLocalGraphicsEnvironment();
+    familyvalue = gEnv.getAvailableFontFamilyNames();
+    
+    ComboBoxModel model = new DefaultComboBoxModel(familyvalue);
+    jcbFont.setModel(model);
+    }
     private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {                                           
         //Show Open File Menu
         JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
