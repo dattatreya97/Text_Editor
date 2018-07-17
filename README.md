@@ -9,6 +9,6 @@
 
 
 Additional
-1.Font change/format
-2.Replace/Replace all
+1.Add line numbers
+2.Syntax highlighting(basic)
 feel free to add any other options.
