@@ -11,4 +11,6 @@
 Additional
 1.Add line numbers
 2.Syntax highlighting(basic)
+3.Color selection
+4.Font Selection
 feel free to add any other options.
