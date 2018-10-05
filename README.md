@@ -13,4 +13,5 @@ Additional
 2.Syntax highlighting(basic)
 3.Color selection
 4.Font Selection
+5.Font Family Options
 feel free to add any other options.
